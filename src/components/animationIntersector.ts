@@ -20,12 +20,13 @@ export type AnimationItemGroup = '' | 'none' | 'chat' | 'lock' |
   'STICKERS-POPUP' | 'emoticons-dropdown' | 'STICKERS-SEARCH' | 'GIFS-SEARCH' |
   `CHAT-MENU-REACTIONS-${number}` | 'INLINE-HELPER' | 'GENERAL-SETTINGS' | 'STICKER-VIEWER' | 'EMOJI' |
   'EMOJI-STATUS' | `chat-${number}`;
+
 export interface AnimationItem {
   el: HTMLElement,
   group: AnimationItemGroup,
   animation: AnimationItemWrapper,
   controlled?: boolean
-};
+}
 
 export interface AnimationItemWrapper {
   remove: () => void;
@@ -34,19 +35,19 @@ export interface AnimationItemWrapper {
   play: () => any;
   autoplay: boolean;
   // onVisibilityChange?: (visible: boolean) => boolean;
-};
+}
 
 export class AnimationIntersector {
   private observer: IntersectionObserver;
   private visible: Set<AnimationItem>;
 
   private overrideIdleGroups: Set<string>;
-  private byGroups: {[group in AnimationItemGroup]?: AnimationItem[]};
+  private byGroups: { [group in AnimationItemGroup]?: AnimationItem[] };
   private byPlayer: Map<AnimationItem['animation'], AnimationItem>;
-  private lockedGroups: {[group in AnimationItemGroup]?: true};
+  private lockedGroups: { [group in AnimationItemGroup]?: true };
   private onlyOnePlayableGroup: AnimationItemGroup;
 
-  private intersectionLockedGroups: {[group in AnimationItemGroup]?: true};
+  private intersectionLockedGroups: { [group in AnimationItemGroup]?: true };
   private videosLocked: boolean;
 
   constructor() {

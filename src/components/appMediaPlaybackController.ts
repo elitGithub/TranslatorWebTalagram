@@ -29,7 +29,7 @@ import EventListenerBase from '../helpers/eventListenerBase';
 // TODO: Safari: попробовать замаскировать подгрузку последнего чанка
 // TODO: Safari: пофиксить момент, когда заканчивается песня и пытаешься включить её заново - прогресс сразу в конце
 
-export type MediaItem = {mid: number, peerId: PeerId};
+export type MediaItem = { mid: number, peerId: PeerId };
 
 type HTMLMediaElement = HTMLAudioElement | HTMLVideoElement;
 
@@ -76,7 +76,7 @@ export class AppMediaPlaybackController extends EventListenerBase<{
 
   private waitingMediaForLoad: Map<PeerId, Map<number, CancellablePromise<void>>> = new Map();
   private waitingScheduledMediaForLoad: AppMediaPlaybackController['waitingMediaForLoad'] = new Map();
-  private waitingDocumentsForLoad: {[docId: string]: Set<HTMLMediaElement>} = {};
+  private waitingDocumentsForLoad: { [docId: string]: Set<HTMLMediaElement> } = {};
 
   public willBePlayedMedia: HTMLMediaElement;
   private searchContext: MediaSearchContext;
@@ -112,7 +112,7 @@ export class AppMediaPlaybackController extends EventListenerBase<{
     document.body.append(this.container);
 
     if(navigator.mediaSession) {
-      const actions: {[action in MediaSessionAction]?: MediaSessionActionHandler} = {
+      const actions: { [action in MediaSessionAction]?: MediaSessionActionHandler } = {
         play: this.browserPlay,
         pause: this.browserPause,
         stop: this.browserStop,
@@ -152,7 +152,7 @@ export class AppMediaPlaybackController extends EventListenerBase<{
       }
     });
 
-    const properties: {[key: PropertyKey]: PropertyDescriptor} = {};
+    const properties: { [key: PropertyKey]: PropertyDescriptor } = {};
     const keys = [
       'volume' as const,
       'muted' as const,

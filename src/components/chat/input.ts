@@ -120,6 +120,7 @@ export default class ChatInput {
   private fileInput: HTMLInputElement;
   private inputMessageContainer: HTMLDivElement;
   private btnSend: HTMLButtonElement;
+  private btnTranslate: HTMLButtonElement;
   private btnCancelRecord: HTMLButtonElement;
   private lastUrl = '';
   private lastTimeType = 0;
@@ -747,6 +748,7 @@ export default class ChatInput {
     this.recordRippleEl.classList.add('record-ripple');
 
     this.btnSend = ButtonIcon('none btn-circle btn-send animated-button-icon');
+    this.btnTranslate = ButtonIcon('none btn-circle btn-send animated-button-icon translate');
     this.btnSend.insertAdjacentHTML('afterbegin', `
     <span class="tgico tgico-send"></span>
     <span class="tgico tgico-schedule"></span>
@@ -754,6 +756,11 @@ export default class ChatInput {
     <span class="tgico tgico-microphone_filled"></span>
     `);
 
+    this.btnTranslate.insertAdjacentHTML('afterbegin', `
+    <span class="tgico tgico-translate"></span>
+    `);
+
+    this.btnSendContainer.append(this.recordRippleEl, this.btnTranslate);
     this.btnSendContainer.append(this.recordRippleEl, this.btnSend);
 
     this.sendMenu = new SendMenu({
