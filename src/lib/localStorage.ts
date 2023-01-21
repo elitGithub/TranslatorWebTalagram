@@ -41,16 +41,13 @@ class LocalStorage<Storage extends Record<string, any>> {
         try {
           value = JSON.parse(value);
         } catch(err) {
-          // console.error(err);
         }
       } else {
         value = undefined;
       }
 
       return value;
-    }/*  else {
-      throw 'something went wrong';
-    } */
+    }
   }
 
   public set(obj: Partial<Storage>, onlyLocal = false) {
@@ -85,32 +82,7 @@ class LocalStorage<Storage extends Record<string, any>> {
     } catch(err) {
 
     }
-    // }
   }
-
-  /* public clear(preserveKeys: (keyof Storage)[] = this.preserveKeys) {
-    // if(this.useStorage) {
-      try {
-        let obj: Partial<Storage> = {};
-        if(preserveKeys) {
-          preserveKeys.forEach((key) => {
-            const value = this.get(key);
-            if(value !== undefined) {
-              obj[key] = value;
-            }
-          });
-        }
-
-        localStorage.clear();
-
-        if(preserveKeys) {
-          this.set(obj);
-        }
-      } catch(err) {
-
-      }
-    // }
-  } */
 
   public clear() {
     const keys: string[] = ['dc', 'server_time_offset', 'xt_instance', 'user_auth', 'state_id', 'k_build'];
@@ -145,25 +117,23 @@ export interface LocalStorageProxyTask extends WorkerTaskTemplate {
     type: 'set' | 'get' | 'delete' | 'clear' | 'toggleStorage',
     args: any[]
   }
-};
+}
 
 export interface LocalStorageProxyTaskResponse extends WorkerTaskTemplate {
   type: 'localStorageProxy',
   payload: any
-};
+}
 
 export default class LocalStorageController<Storage extends Record<string, any>> {
   private static STORAGES: LocalStorageController<any>[] = [];
-  // private log = (...args: any[]) => console.log('[SW LS]', ...args);
-  // private log = (...args: any[]) => {};
 
   private storage: LocalStorage<Storage>;
 
-  constructor(/* private preserveKeys: (keyof Storage)[] = [] */) {
+  constructor() {
     LocalStorageController.STORAGES.push(this);
 
     if(!IS_WORKER) {
-      this.storage = new LocalStorage(/* preserveKeys */);
+      this.storage = new LocalStorage();
     }
   }
 

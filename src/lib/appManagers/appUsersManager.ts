@@ -776,7 +776,6 @@ export class AppUsersManager extends AppManager {
         expires: timestamp + onlineTimeFor
       };
 
-      // user.sortStatus = this.getUserStatusForSort(user.status);
       this.rootScope.dispatchEvent('user_update', id);
 
       this.setUserToStateIfNeeded(user);

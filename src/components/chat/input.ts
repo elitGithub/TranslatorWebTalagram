@@ -10,7 +10,6 @@ import type {MyDraftMessage} from '../../lib/appManagers/appDraftsManager';
 import type Chat from './chat';
 import Recorder from '../../../public/recorder.min';
 import IS_TOUCH_SUPPORTED from '../../environment/touchSupport';
-// import Recorder from '../opus-recorder/dist/recorder.min';
 import opusDecodeController from '../../lib/opusDecodeController';
 import {ButtonMenuItemOptions, ButtonMenuItemOptionsVerifiable, ButtonMenuSync} from '../buttonMenu';
 import emoticonsDropdown from '../emoticonsDropdown';
@@ -113,14 +112,12 @@ const POSTING_MEDIA_NOT_ALLOWED = 'Posting media content isn\'t allowed in this 
 type ChatInputHelperType = 'edit' | 'webpage' | 'forward' | 'reply';
 
 export default class ChatInput {
-  // private static AUTO_COMPLETE_REG_EXP = /(\s|^)((?::|.)(?!.*[:@]).*|(?:[@\/]\S*))$/;
   private static AUTO_COMPLETE_REG_EXP = /(\s|^)((?:(?:@|^\/)\S*)|(?::|^[^:@\/])(?!.*[:@\/]).*)$/;
   public messageInput: HTMLElement;
   public messageInputField: InputFieldAnimated;
   private fileInput: HTMLInputElement;
   private inputMessageContainer: HTMLDivElement;
   private btnSend: HTMLButtonElement;
-  private btnTranslate: HTMLButtonElement;
   private btnCancelRecord: HTMLButtonElement;
   private lastUrl = '';
   private lastTimeType = 0;
@@ -136,6 +133,7 @@ export default class ChatInput {
   private replyKeyboard: ReplyKeyboard;
 
   private attachMenu: HTMLElement;
+  private btnTranslate: HTMLElement;
   private attachMenuButtons: ButtonMenuItemOptionsVerifiable[];
 
   private sendMenu: SendMenu;
@@ -177,10 +175,6 @@ export default class ChatInput {
   private recordStartTime = 0;
   private recordingOverlayListener: Listener;
   private recordingNavigationItem: NavigationItem;
-
-  // private scrollTop = 0;
-  // private scrollOffsetTop = 0;
-  // private scrollDiff = 0;
 
   public helperType: Exclude<ChatInputHelperType, 'webpage'>;
   private helperFunc: () => void | Promise<void>;
@@ -232,8 +226,7 @@ export default class ChatInput {
   private botCommands: ChatBotCommands;
   private botCommandsIcon: HTMLDivElement;
   private hasBotCommands: boolean;
-
-  // private activeContainer: HTMLElement;
+  private translationActive = false;
 
   private sendAs: ChatSendAs;
   public sendAsPeerId: PeerId;
@@ -283,72 +276,6 @@ export default class ChatInput {
       this.chat.bubbles.onGoDownClick();
     }, {listenerSetter: this.listenerSetter});
 
-    // * constructor end
-
-    /* let setScrollTopTimeout: number;
-    // @ts-ignore
-    let height = window.visualViewport.height; */
-    // @ts-ignore
-    // this.listenerSetter.add(window.visualViewport)('resize', () => {
-    //   const scrollable = this.chat.bubbles.scrollable;
-    //   const wasScrolledDown = scrollable.isScrolledDown;
-
-    //   /* if(wasScrolledDown) {
-    //     this.saveScroll();
-    //   } */
-
-    //   // @ts-ignore
-    //   let newHeight = window.visualViewport.height;
-    //   const diff = height - newHeight;
-    //   const scrollTop = scrollable.scrollTop;
-    //   const needScrollTop = wasScrolledDown ? scrollable.scrollHeight : scrollTop + diff; // * wasScrolledDown это проверка для десктоп хрома, когда пропадает панель загрузок снизу
-
-    //   console.log('resize before', scrollable.scrollTop, scrollable.container.clientHeight, scrollable.scrollHeight, wasScrolledDown, scrollable.lastScrollTop, diff, needScrollTop);
-
-    //   scrollable.scrollTop = needScrollTop;
-
-    //   if(setScrollTopTimeout) clearTimeout(setScrollTopTimeout);
-    //   setScrollTopTimeout = window.setTimeout(() => {
-    //     const diff = height - newHeight;
-    //     const isScrolledDown = scrollable.scrollHeight - Math.round(scrollable.scrollTop + scrollable.container.offsetHeight + diff) <= 1;
-    //     height = newHeight;
-
-    //     scrollable.scrollTop = needScrollTop;
-
-    //     console.log('resize after', scrollable.scrollTop, scrollable.container.clientHeight, scrollable.scrollHeight, scrollable.isScrolledDown, scrollable.lastScrollTop, isScrolledDown);
-
-    //     /* if(isScrolledDown) {
-    //       scrollable.scrollTop = scrollable.scrollHeight;
-    //     } */
-
-    //     //scrollable.scrollTop += diff;
-    //     setScrollTopTimeout = 0;
-    //   }, 0);
-    // });
-
-    // ! Can't use it with resizeObserver
-    /* this.listenerSetter.add(window.visualViewport)('resize', () => {
-      const scrollable = this.chat.bubbles.scrollable;
-      const wasScrolledDown = scrollable.isScrolledDown;
-
-      // @ts-ignore
-      let newHeight = window.visualViewport.height;
-      const diff = height - newHeight;
-      const needScrollTop = wasScrolledDown ? scrollable.scrollHeight : scrollable.scrollTop + diff; // * wasScrolledDown это проверка для десктоп хрома, когда пропадает панель загрузок снизу
-
-      //console.log('resize before', scrollable.scrollTop, scrollable.container.clientHeight, scrollable.scrollHeight, wasScrolledDown, scrollable.lastScrollTop, diff, needScrollTop);
-
-      scrollable.scrollTop = needScrollTop;
-      height = newHeight;
-
-      if(setScrollTopTimeout) clearTimeout(setScrollTopTimeout);
-      setScrollTopTimeout = window.setTimeout(() => { // * try again for scrolled down Android Chrome
-        scrollable.scrollTop = needScrollTop;
-
-        //console.log('resize after', scrollable.scrollTop, scrollable.container.clientHeight, scrollable.scrollHeight, scrollable.isScrolledDown, scrollable.lastScrollTop, isScrolledDown);
-        setScrollTopTimeout = 0;
-      }, 0);
-    }); */
 
     const c = this.controlContainer = document.createElement('div');
     c.classList.add('chat-input-control', 'chat-input-wrapper');
@@ -364,7 +291,6 @@ export default class ChatInput {
 
     this.replyElements.container.append(this.replyElements.iconBtn, this.replyElements.cancelBtn);
 
-    //
 
     const onHideAuthorClick = () => {
       isChangingAuthor = true;
@@ -411,7 +337,6 @@ export default class ChatInput {
       buttons: forwardButtons,
       listenerSetter: this.listenerSetter
     });
-    // forwardBtnMenu.classList.add('top-center');
 
     const children = Array.from(forwardBtnMenu.children) as HTMLElement[];
     const groups: {
@@ -479,11 +404,18 @@ export default class ChatInput {
       input.value = '' + +!(idx % 2);
     });
 
-    //
-
     this.newMessageWrapper = document.createElement('div');
     this.newMessageWrapper.classList.add('new-message-wrapper');
+    this.btnTranslate = ButtonIcon('language');
 
+    this.listenerSetter.add(this.btnTranslate)('click', (event) => {
+      if(this.btnTranslate.classList.contains('active')) {
+        this.btnTranslate.classList.remove('active');
+      } else {
+        this.btnTranslate.classList.add('active');
+      }
+      this.translationActive = !this.translationActive;
+    });
     this.replyInTopicOverlay = document.createElement('div');
     this.replyInTopicOverlay.classList.add('reply-in-topic-overlay', 'hide');
     this.replyInTopicOverlay.append(i18n('Chat.Input.ReplyToAnswer'));
@@ -718,8 +650,6 @@ export default class ChatInput {
     this.attachMenu.classList.add('attach-file', 'tgico-attach');
     this.attachMenu.classList.remove('tgico-more');
 
-    // this.inputContainer.append(this.sendMenu);
-
     this.recordTimeEl = document.createElement('div');
     this.recordTimeEl.classList.add('record-time');
 
@@ -729,7 +659,7 @@ export default class ChatInput {
     this.fileInput.style.display = 'none';
 
     this.newMessageWrapper.append(...[this.botCommandsToggle, this.btnToggleEmoticons, this.inputMessageContainer, this.btnScheduled, this.btnToggleReplyMarkup, this.attachMenu, this.recordTimeEl, this.fileInput].filter(Boolean));
-
+    this.newMessageWrapper.append(this.btnTranslate);
     this.rowsWrapper.append(this.replyElements.container);
     this.autocompleteHelperController = new AutocompleteHelperController();
     this.stickersHelper = new StickersHelper(this.rowsWrapper, this.autocompleteHelperController, this.chat, this.managers);
@@ -744,11 +674,11 @@ export default class ChatInput {
     this.btnSendContainer = document.createElement('div');
     this.btnSendContainer.classList.add('btn-send-container');
 
+
     this.recordRippleEl = document.createElement('div');
     this.recordRippleEl.classList.add('record-ripple');
 
     this.btnSend = ButtonIcon('none btn-circle btn-send animated-button-icon');
-    this.btnTranslate = ButtonIcon('none btn-circle btn-send animated-button-icon translate');
     this.btnSend.insertAdjacentHTML('afterbegin', `
     <span class="tgico tgico-send"></span>
     <span class="tgico tgico-schedule"></span>
@@ -756,11 +686,6 @@ export default class ChatInput {
     <span class="tgico tgico-microphone_filled"></span>
     `);
 
-    this.btnTranslate.insertAdjacentHTML('afterbegin', `
-    <span class="tgico tgico-translate"></span>
-    `);
-
-    this.btnSendContainer.append(this.recordRippleEl, this.btnTranslate);
     this.btnSendContainer.append(this.recordRippleEl, this.btnSend);
 
     this.sendMenu = new SendMenu({
@@ -789,25 +714,12 @@ export default class ChatInput {
 
     this.attachMessageInputField();
 
-    /* this.attachMenu.addEventListener('mousedown', (e) => {
-      const hidden = this.attachMenu.querySelectorAll('.hide');
-      if(hidden.length === this.attachMenuButtons.length) {
-        toast(POSTING_MEDIA_NOT_ALLOWED);
-        cancelEvent(e);
-        return false;
-      }
-    }, {passive: false, capture: true}); */
 
     this.listenerSetter.add(rootScope)('settings_updated', () => {
       if(this.stickersHelper || this.emojiHelper) {
         // this.previousQuery = undefined;
         this.previousQuery = '';
         this.checkAutocomplete();
-        /* if(!rootScope.settings.stickers.suggest) {
-          this.stickersHelper.checkEmoticon('');
-        } else {
-          this.onMessageInput();
-        } */
       }
 
       this.messageInputField?.onFakeInput();
@@ -847,10 +759,6 @@ export default class ChatInput {
         if(this.replyToMsgId && msgs.has(this.replyToMsgId)) {
           this.clearHelper('reply');
         }
-
-        /* if(this.chat.isStartButtonNeeded()) {
-          this.setStartParam(BOT_START_PARAM);
-        } */
       }
     });
 
@@ -866,8 +774,6 @@ export default class ChatInput {
 
     try {
       this.recorder = new Recorder({
-        // encoderBitRate: 32,
-        // encoderPath: "../dist/encoderWorker.min.js",
         encoderSampleRate: 48000,
         monitorGain: 0,
         numberOfChannels: 1,
@@ -890,22 +796,6 @@ export default class ChatInput {
       this.fileInput.value = '';
     }, false);
 
-    /* let time = Date.now();
-    this.btnSend.addEventListener('touchstart', (e) => {
-      time = Date.now();
-    });
-
-    let eventName1 = 'touchend';
-    this.btnSend.addEventListener(eventName1, (e: Event) => {
-      //cancelEvent(e);
-      console.log(eventName1 + ', time: ' + (Date.now() - time));
-    });
-
-    let eventName = 'mousedown';
-    this.btnSend.addEventListener(eventName, (e: Event) => {
-      cancelEvent(e);
-      console.log(eventName + ', time: ' + (Date.now() - time));
-    }); */
     attachClickEvent(this.btnSend, this.onBtnSendClick, {listenerSetter: this.listenerSetter, touchMouseDown: true});
 
     if(this.recorder) {
@@ -942,13 +832,8 @@ export default class ChatInput {
 
         const duration = (Date.now() - this.recordStartTime) / 1000 | 0;
         const dataBlob = new Blob([typedArray], {type: 'audio/ogg'});
-        /* const fileName = new Date().toISOString() + ".opus";
-        console.log('Recorder data received', typedArray, dataBlob); */
 
-        // let perf = performance.now();
         opusDecodeController.decode(typedArray, true).then((result) => {
-          // console.log('WAVEFORM!:', /* waveform,  */performance.now() - perf);
-
           opusDecodeController.setKeepAlive(false);
 
           // тут objectURL ставится уже с audio/wav
@@ -1028,13 +913,6 @@ export default class ChatInput {
     if(neededFakeContainer === this.fakeWrapperTo) {
       return;
     }
-
-    /* if(neededFakeContainer === this.botStartContainer && this.fakeWrapperTo === this.fakeSelectionWrapper) {
-      this.inputContainer.classList.remove('is-centering');
-      void this.rowsWrapper.offsetLeft; // reflow
-      // this.inputContainer.classList.add('is-centering');
-      // void this.rowsWrapper.offsetLeft; // reflow
-    } */
 
     const fakeSelectionWrapper = neededFakeContainer || this.fakeWrapperTo;
     const forwards = !!neededFakeContainer;
@@ -1131,22 +1009,6 @@ export default class ChatInput {
     }
   }
 
-  // public getActiveContainer() {
-  //   if(this.chat.selection.isSelecting) {
-  //     return this.chat
-  //   }
-  //   return this.startParam !== undefined ? this.botStartContainer : this.rowsWrapper;
-  // }
-
-  // public setActiveContainer() {
-  //   const container = this.activeContainer;
-  //   const newContainer = this.getActiveContainer();
-  //   if(newContainer === container) {
-  //     return;
-  //   }
-
-
-  // }
 
   private onCancelRecordClick = (e?: Event) => {
     if(e) {

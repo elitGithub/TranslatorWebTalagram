@@ -32,11 +32,7 @@ export default class PinnedMessageBorder {
     const radius = 1;
 
     let d = '';
-    /* if(count === 3) {
-      d = this.drawRect(0, 0, WIDTH, barHeight, radius)
-        + this.drawRect(0, barHeight + GAP, WIDTH, barHeight + 1, radius)
-        + this.drawRect(0, barHeight * 2 + GAP * 2 + 1, WIDTH, barHeight, radius);
-    } */if(count === 2) {
+    if(count === 2) {
       d = this.drawRect(0, 0, WIDTH, barHeight, radius) + this.drawRect(0, barHeight + GAP * 2, WIDTH, barHeight, radius);
     } else {
       for(let i = 0; i < count; ++i) {
@@ -122,9 +118,7 @@ export default class PinnedMessageBorder {
       return trackHeight - BAR_HEIGHTS.ONE - barHeight;
     }
 
-    // return (index + 1) * barHeight + index * GAP;
     return (index - 2) * barHeight + index * GAP;
-    // return (barHeight + GAP * 2) / 2 + (index - 2) * (barHeight + GAP);
   };
 
   private getTrackHeight = (count: number, barHeight: number) => {

@@ -36,6 +36,7 @@ import middlewarePromise from '../../helpers/middlewarePromise';
 import indexOfAndSplice from '../../helpers/array/indexOfAndSplice';
 import {Message} from '../../layer';
 import animationIntersector, {AnimationItemGroup} from '../animationIntersector';
+import PopupSelectTranslationLanguage from '../popups/selectTranslation';
 
 export type ChatType = 'chat' | 'pinned' | 'discussion' | 'scheduled';
 
@@ -53,7 +54,6 @@ export default class Chat extends EventListenerBase<{
   public search: ChatSearch;
 
   public wasAlreadyUsed: boolean;
-  // public initPeerId = 0;
   public peerId: PeerId;
   public threadId: number;
   public setPeerPromise: Promise<void>;
@@ -79,7 +79,6 @@ export default class Chat extends EventListenerBase<{
   public setBackgroundPromise: Promise<void>;
   public sharedMediaTab: AppSharedMediaTab;
   public sharedMediaTabs: AppSharedMediaTab[];
-  // public renderDarkPattern: () => Promise<void>;
 
   public isBot: boolean;
   public isChannel: boolean;
@@ -147,7 +146,6 @@ export default class Chat extends EventListenerBase<{
       this.patternRenderer =
       this.gradientCanvas =
       this.patternCanvas =
-      // this.renderDarkPattern =
       undefined;
 
     const intensity = theme.background.intensity && theme.background.intensity / 100;
@@ -178,18 +176,6 @@ export default class Chat extends EventListenerBase<{
           if(isDarkPattern) {
             item.classList.add('is-dark');
           }
-
-          // if(isDarkPattern) {
-          //   this.renderDarkPattern = () => {
-          //     return patternRenderer.exportCanvasPatternToImage(patternCanvas).then((url) => {
-          //       if(this.backgroundTempId !== tempId) {
-          //         return;
-          //       }
-
-          //       gradientCanvas.style.webkitMaskImage = `url(${url})`;
-          //     });
-          //   };
-          // }
         } else if(theme.background.slug) {
           item.classList.add('is-image');
         }
@@ -210,10 +196,6 @@ export default class Chat extends EventListenerBase<{
       if(rootScope.settings.animationsEnabled) {
         gradientRenderer.scrollAnimate(true);
       }
-      // } else {
-      //   item.style.backgroundColor = color;
-      //   item.style.backgroundImage = 'none';
-      // }
     }
 
     if(patternRenderer) {
@@ -244,7 +226,6 @@ export default class Chat extends EventListenerBase<{
 
         const append = [
           gradientCanvas,
-          // isDarkPattern && this.renderDarkPattern ? undefined : patternCanvas
           patternCanvas
         ].filter(Boolean);
         if(append.length) {
@@ -276,15 +257,6 @@ export default class Chat extends EventListenerBase<{
           if(this.backgroundTempId !== tempId) {
             return;
           }
-
-          // let promise: Promise<any>;
-          // if(isDarkPattern && this.renderDarkPattern) {
-          //   promise = this.renderDarkPattern();
-          // } else {
-          // const promise = Promise.resolve();
-          // }
-
-          // promise.then(cb);
           cb();
         });
       } else if(url) {
@@ -304,9 +276,7 @@ export default class Chat extends EventListenerBase<{
     this.type = type;
   }
 
-  public init(/* peerId: PeerId */) {
-    // this.initPeerId = peerId;
-
+  public init() {
     this.topbar = new ChatTopbar(this, appSidebarRight, this.managers);
     this.bubbles = new ChatBubbles(this, this.managers);
     this.input = new ChatInput(this, this.appImManager, this.managers);
@@ -387,8 +357,6 @@ export default class Chat extends EventListenerBase<{
   }
 
   public destroy() {
-    // const perf = performance.now();
-
     this.destroySharedMediaTab();
     this.topbar.destroy();
     this.bubbles.destroy();
@@ -405,8 +373,6 @@ export default class Chat extends EventListenerBase<{
     delete this.contextMenu;
 
     this.container.remove();
-
-    // this.log.error('Chat destroy time:', performance.now() - perf);
   }
 
   public cleanup(helperToo = true) {
@@ -493,11 +459,6 @@ export default class Chat extends EventListenerBase<{
 
       this.inited = true;
     }
-
-    // const appMediaViewer = (window as any).appMediaViewer as AppMediaViewerBase<any, any, any>;
-    // if(appMediaViewer) {
-    //   appMediaViewer.close();
-    // }
 
     const samePeer = this.appImManager.isSamePeer(this, options);
     if(!samePeer) {
@@ -645,6 +606,10 @@ export default class Chat extends EventListenerBase<{
 
       tab.open(this.peerId, this.threadId, this.bubbles.onDatePick, query);
     }
+  }
+
+  public initTranslation(query?: string) {
+    return new PopupSelectTranslationLanguage();
   }
 
   public canSend(action?: ChatRights) {

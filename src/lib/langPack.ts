@@ -68,7 +68,7 @@ export const langPack: {[actionType: string]: LangPackKey} = {
   'messageActionBotAllowed': 'Chat.Service.BotPermissionAllowed'
 };
 
-export type LangPackKey = /* string |  */keyof typeof lang | keyof typeof langSign;
+export type LangPackKey = keyof typeof lang | keyof typeof langSign;
 
 export type FormatterArgument = string | number | Node | FormatterArgument[];
 export type FormatterArguments = FormatterArgument[];
@@ -103,13 +103,11 @@ namespace I18n {
       stateStorage.get('langPack') as Promise<LangPackDifference>,
       polyfillPromise
     ]).then(([langPack]) => {
-      if(!langPack/*  || true */) {
+      if(!langPack) {
         return loadLocalLangPack();
       } else if(DEBUG && false) {
         return getLangPack(langPack.lang_code);
-      }/*  else if(langPack.appVersion !== App.langPackVersion) {
-        return getLangPack(langPack.lang_code);
-      } */
+      }
 
       if(!lastRequestedLangCode) {
         setLangCode(langPack.lang_code);
@@ -349,12 +347,10 @@ namespace I18n {
 
     let lastIndex = 0;
     input.replace(regExp, (match, p1: any, p2: any, p3: any, p4: string, offset: number, string: string) => {
-      // console.table({match, p1, p2, offset, string});
 
       out.push(string.slice(lastIndex, offset));
 
       if(p1) {
-        // offset += p1.length;
         let element: HTMLElement;
         switch(p1) {
           case '**': {
@@ -427,11 +423,9 @@ namespace I18n {
       } else if(str._ === 'langPackString') {
         input = str.value;
       } else {
-        // input = '[' + key + ']';
         input = key;
       }
     } else {
-      // input = '[' + key + ']';
       input = key;
     }
 
@@ -441,20 +435,6 @@ namespace I18n {
     } else {
       return result;
     }
-
-    /* if(plain) {
-      if(args?.length) {
-        const regExp = /un\d|%\d\$.|%./g;
-        let i = 0;
-        input = input.replace(regExp, (match, offset, string) => {
-          return '' + args[i++];
-        });
-      }
-
-      return input;
-    } else {
-      return superFormatter(input, args);
-    } */
   }
 
   export const weakMap: WeakMap<HTMLElement, IntlElementBase<IntlElementBaseOptions>> = new WeakMap();
@@ -554,9 +534,6 @@ namespace I18n {
       if(this.options.hour && this.options.minute && Object.keys(this.options).length === 2/*  && false */) {
         const hours = this.date.getHours();
         text = ('0' + (timeFormat === 'h12' ? (hours % 12) || 12 : hours)).slice(-2) + ':' + ('0' + this.date.getMinutes()).slice(-2);
-        // if(this.options.second) {
-        //   text += ':' + ('0' + this.date.getSeconds()).slice(-2);
-        // }
 
         if(timeFormat === 'h12') {
           text += ' ' + (hours < 12 ? amPmCache.am : amPmCache.pm);

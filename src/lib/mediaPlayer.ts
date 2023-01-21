@@ -34,8 +34,6 @@ export default class VideoPlayer extends ControlsHover {
   protected playbackRateButton: HTMLElement;
   protected pipButton: HTMLElement;
 
-  /* protected videoParent: HTMLElement;
-  protected videoWhichChild: number; */
 
   protected onPlaybackRackMenuToggle?: (open: boolean) => void;
   protected onPip?: (pip: boolean) => void;
@@ -342,30 +340,8 @@ export default class VideoPlayer extends ControlsHover {
     }
 
     if(!isFullScreen()) {
-      /* const videoParent = this.video.parentElement;
-      const videoWhichChild = whichChild(this.video);
-      const needVideoRemount = videoParent !== player;
-
-      if(needVideoRemount) {
-        this.videoParent = videoParent;
-        this.videoWhichChild = videoWhichChild;
-        player.prepend(this.video);
-      } */
-
       requestFullScreen(player);
     } else {
-      /* if(this.videoParent) {
-        const {videoWhichChild, videoParent} = this;
-        if(!videoWhichChild) {
-          videoParent.prepend(this.video);
-        } else {
-          videoParent.insertBefore(this.video, videoParent.children[videoWhichChild]);
-        }
-
-        this.videoParent = null;
-        this.videoWhichChild = -1;
-      } */
-
       cancelFullScreen();
     }
   }

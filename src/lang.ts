@@ -22,6 +22,7 @@ const lang = {
   'EditProfile.Username.Invalid': 'Username is invalid',
   'ExceptionModal.Search.Placeholder': 'Add exception...',
   'Chat.Menu.SelectMessages': 'Select Messages',
+  'Chat.Menu.TranslateMessage': 'Translation Menu',
   'Chat.Menu.ClearSelection': 'Clear Selection',
   'Chat.Menu.Hint': 'To **edit** or **reply**, close this menu.\nThen tap next to a message.',
   'Chat.Input.UnpinAll': 'Unpin All Messages',
@@ -42,7 +43,6 @@ const lang = {
   'ChatList.Main.EmptyPlaceholder.Title': 'Your chats will appear here',
   'ChatList.Main.EmptyPlaceholder.Subtitle': 'You have %s on Telegram',
   'ChatList.Main.EmptyPlaceholder.SubtitleNoContacts': 'Use Telegram app on your [Android](https://telegram.org/android) or [iOS](https://telegram.org/dl/ios) device to sync your contacts',
-  // "ChatList.Menu.Archived": "Archived",
   'ChatList.Menu.SwitchTo.Webogram': 'Switch to Old Version',
   'ChatList.Menu.SwitchTo.Z': 'Switch to Z version',
   'ChatMigration.From': 'Migrated from %s',
@@ -61,10 +61,6 @@ const lang = {
   'Deactivated.Subtitle': 'Telegram supports only one active tab with the app.\nClick anywhere to continue using this tab.',
   'Deactivated.Version.Title': 'WebK has updated...',
   'Deactivated.Version.Subtitle': 'Another tab is running a newer version of Telegram.\nClick anywhere to reload this tab.',
-  // "Drafts": {
-  //   "one_value": "%d draft",
-  //   "other_value": "%d drafts",
-  // },
   'General.Keyboard': 'Keyboard',
   'General.SendShortcut.Enter': 'Send by Enter',
   'General.SendShortcut.CtrlEnter': 'Send by %s + Enter',
@@ -496,6 +492,7 @@ const lang = {
   'Updating': 'Updating...',
   'Emoji': 'Emoji',
   'AddContactTitle': 'Add Contact',
+  'SelectTrans': 'Select Languages',
   'HiddenName': 'Deleted Account',
   'Seconds': {
     'one_value': '%1$d second',
@@ -574,6 +571,7 @@ const lang = {
   'LinkNotFound': 'Unfortunately, you can\'t access this message. You are not a member of the chat where it was posted.',
   'Create': 'Create',
   'ViewDiscussion': 'View discussion',
+  'SelectLangTranslation': 'Select Translation Languages',
   'MessageScheduledUntilOnline': 'Scheduled until online',
   'ReportChat': 'Report',
   'ReportChatSpam': 'Spam',
@@ -1017,12 +1015,6 @@ const lang = {
   'Chat.Poll.TotalVotesResultEmpty': 'No votes',
   'Chat.Quiz.TotalVotesEmpty': 'No answers yet',
   'Chat.Quiz.TotalVotesResultEmpty': 'No answers',
-  // "Chat.Poll.Stop.Confirm.Header": "Stop Poll?",
-  // "Chat.Poll.Stop.Confirm.Text": "If you stop this poll now, nobody will be able to vote in it anymore. This action cannot be undone.",
-  // "Chat.Pinned.UnpinAll": {
-  //   "one_value": "Unpin %d Message",
-  //   "other_value": "Unpin All %d Messages"
-  // },
   'Chat.Pinned.DontShow': 'Don\'t Show Pinned Messages',
   'Chat.Title.Comments': {
     'one_value': '%d Comment',
@@ -1199,8 +1191,8 @@ const lang = {
   'PeerInfo.SharedMedia': 'Shared Media',
   'PeerInfo.Subscribers': 'Subscribers',
   'PeerInfo.DeleteContact': 'Delete Contact',
-  // "PeerInfo.Confirm.RemovePeer": "Remove %@ from the group?",
   'PeerInfo.Action.VoiceChat': 'Video Chat',
+  'PeerInfo.Action.SelectLang': 'Select Translation Languages',
   'PeerInfo.Action.LiveStream': 'Live Stream',
   'PeerInfo.Phone.AnonymousInfo': 'This number is not tied to a SIM card and was acquired on [Fragment]().',
   'PeerMedia.Members': 'Members',
@@ -1209,7 +1201,6 @@ const lang = {
   'PollResults.LoadMore': {
     'other_value': 'Show More (%d)'
   },
-  // "PeerInfo.Confirm.DeleteGroupConfirmation": "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?",
   'Preview.Dragging.AddItems': {
     'one_value': 'Add Item',
     'other_value': 'Add Items'

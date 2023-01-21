@@ -4,55 +4,11 @@
  * https://github.com/morethanwords/tweb/blob/master/LICENSE
  */
 
-// import { MOUNT_CLASS_TO } from "../config/debug";
 import type {ArgumentTypes, SuperReturnType} from '../types';
 import findAndSplice from './array/findAndSplice';
 
-// class EventSystem {
-//   wm: WeakMap<any, Record<any, Set<any>>> = new WeakMap();
-
-//   add(target: any, event: any, listener: any) {
-//     let listeners = this.wm.get(target);
-//     if (listeners === undefined) {
-//         listeners = {};
-//     }
-//     let listenersForEvent = listeners[event];
-//     if (listenersForEvent === undefined) {
-//         listenersForEvent = new Set();
-//     }
-//     listenersForEvent.add(listener);
-//     listeners[event] = listenersForEvent;
-//     //target.addEventListener(event, listener);
-//     this.wm.set(target, listeners);
-//   };
-
-//   remove(target: any, event: any, listener: any) {
-//     let listeners = this.wm.get(target);
-//     if (!listeners) return;
-//     let listenersForEvent = listeners[event];
-//     if (!listenersForEvent) return;
-//     listenersForEvent.delete(listener);
-//   };
-
-//   /* fire(target, event) {
-//      let listeners = this.wm.get(target);
-//      if (!listeners) return;
-//      let listenersForEvent = listeners[event];
-//      if (!listenersForEvent) return;
-//      for (let handler of handlers) {
-//          setTimeout(handler, 0, event, target); // we use a setTimeout here because we want event triggering to be asynchronous.
-//      }
-//   }; */
-// }
-
-// console.log = () => {};
-
-// const e = new EventSystem();
-// MOUNT_CLASS_TO.e = e;
 
 export type EventListenerListeners = Record<string, Function>;
-// export type EventListenerListeners = Record<string, (...args: any[]) => any>;
-// export type EventListenerListeners = {[name in string]: Function};
 
 /**
  * Better not to remove listeners during setting
@@ -61,8 +17,6 @@ export type EventListenerListeners = Record<string, Function>;
 
 type ListenerObject<T> = {callback: T, options: boolean | AddEventListenerOptions};
 
-// type EventLitenerCallback<T> = (data: T) =>
-// export default class EventListenerBase<Listeners extends {[name: string]: Function}> {
 export default class EventListenerBase<Listeners extends EventListenerListeners> {
   protected listeners: Partial<{
     [k in keyof Listeners]: Array<ListenerObject<Listeners[k]>>
@@ -94,8 +48,6 @@ export default class EventListenerBase<Listeners extends EventListenerListeners>
         return;
       }
     }
-
-    // e.add(this, name, {callback, once});
   }
 
   public addMultipleEventsListeners(obj: {
@@ -114,7 +66,6 @@ export default class EventListenerBase<Listeners extends EventListenerListeners>
     if(this.listeners[name]) {
       findAndSplice(this.listeners[name], (l) => l.callback === callback);
     }
-    // e.remove(this, name, callback);
   }
 
   protected invokeListenerCallback<T extends keyof Listeners, L extends ListenerObject<any>>(
@@ -127,7 +78,6 @@ export default class EventListenerBase<Listeners extends EventListenerListeners>
       result = listener.callback(...args);
     } catch(err) {
       error = err;
-      // console.error('listener callback error', err);
     }
 
     if((listener.options as AddEventListenerOptions)?.once) {

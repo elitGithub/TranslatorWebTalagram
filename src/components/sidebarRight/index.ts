@@ -16,7 +16,6 @@ export const RIGHT_COLUMN_ACTIVE_CLASSNAME = 'is-right-column-shown';
 export class AppSidebarRight extends SidebarSlider {
   private isColumnProportionSet = false;
   private sharedMediaTab: AppSharedMediaTab;
-  // public rect: DOMRect;
 
   constructor() {
     super({
@@ -43,7 +42,6 @@ export class AppSidebarRight extends SidebarSlider {
   public createSharedMediaTab() {
     const tab = this.createTab(AppSharedMediaTab, false, true);
     tab.slider = this;
-    // this.tabsContainer.prepend(tab.container);
     return tab;
   }
 
@@ -92,7 +90,6 @@ export class AppSidebarRight extends SidebarSlider {
   private setColumnProportion() {
     const proportion = this.sidebarEl.scrollWidth / this.sidebarEl.previousElementSibling.scrollWidth;
     document.documentElement.style.setProperty('--right-column-proportion', '' + proportion);
-    // this.rect = this.sidebarEl.getBoundingClientRect();
   }
 
   public toggleSidebar(enable?: boolean, animate?: boolean) {
@@ -124,49 +121,6 @@ export class AppSidebarRight extends SidebarSlider {
     const animationPromise = appImManager.selectTab(active ? APP_TABS.CHAT : APP_TABS.PROFILE, animate);
     document.body.classList.toggle(RIGHT_COLUMN_ACTIVE_CLASSNAME, enable);
     return animationPromise;
-
-    /* return new Promise((resolve, reject) => {
-      const hidden: {element: HTMLDivElement, height: number}[] = [];
-      const observer = new IntersectionObserver((entries) => {
-        for(const entry of entries) {
-          const bubble = entry.target as HTMLDivElement;
-          if(!entry.isIntersecting) {
-            hidden.push({element: bubble, height: bubble.scrollHeight});
-          }
-        }
-
-        for(const item of hidden) {
-          item.element.style.minHeight = item.height + 'px';
-          (item.element.firstElementChild as HTMLElement).style.display = 'none';
-          item.element.style.width = '1px';
-        }
-
-        //console.log('hidden', hidden);
-        observer.disconnect();
-
-        set();
-
-        setTimeout(() => {
-          for(const item of hidden) {
-            item.element.style.minHeight = '';
-            item.element.style.width = '';
-            (item.element.firstElementChild as HTMLElement).style.display = '';
-          }
-
-          resolve();
-        }, 200);
-      });
-
-      const length = Object.keys(appImManager.bubbles).length;
-      if(length) {
-        for(const i in appImManager.bubbles) {
-          observer.observe(appImManager.bubbles[i]);
-        }
-      } else {
-        set();
-        setTimeout(resolve, 200);
-      }
-    }); */
   }
 }
 

@@ -9,8 +9,6 @@ const files = fs.readdirSync(iconsPath);
 const icons = files.filter(file => file.endsWith('.svg')).map(file => iconsPath + file);
 
 function moveFiles(outPath) {
-  // const path = './out/';
-
   const stylesOutPath = path.join(__dirname, '../../scss/tgico/_');
 
   let styleText = fs.readFileSync(outPath + 'style.scss').toString();
@@ -24,7 +22,7 @@ function moveFiles(outPath) {
 [class*=" tgico-"]:before,
 [class*=" tgico-"]:after`);
   fs.writeFileSync(stylesOutPath + 'style.scss', styleText);
-  
+
   let variablesText = fs.readFileSync(outPath + 'variables.scss').toString();
   variablesText = variablesText.slice(variablesText.indexOf('\n\n') + 2);
   fs.writeFileSync(stylesOutPath + 'variables.scss', variablesText);
@@ -36,12 +34,8 @@ function moveFiles(outPath) {
   });
 }
 
-// moveFiles();
-// process.exit(0);
-
 pipeline({
   icons,
-  // names: ['new1', 'new2'],
   selectionPath: path.join(__dirname, './selection.json'),
   outputDir: path.join(__dirname, './out'),
   forceOverride: true,

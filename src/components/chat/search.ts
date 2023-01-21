@@ -89,7 +89,6 @@ export default class ChatSearch {
     });
     this.appSearch.beginSearch(this.chat.peerId, this.chat.threadId);
 
-    // appImManager.topbar.parentElement.insertBefore(this.results, appImManager.bubblesContainer);
     this.chat.bubbles.container.append(this.results);
 
     // Footer

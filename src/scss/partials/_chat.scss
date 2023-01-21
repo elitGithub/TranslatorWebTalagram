@@ -17,18 +17,9 @@ $background-transition-total-time: #{$input-transition-time - $background-transi
 
 $chat-input-border-radius: 1rem;
 
-/* #bubble-contextmenu > div {
-	padding: 0 5.25 0 1rem;
-
-	@include respond-to(handhelds) {
-		padding: 0 3.75rem 0 1rem;
-	}
-} */
-
 .chat-input {
   --translateY: 0;
   --padding-bottom: #{$chat-padding-handhelds};
-  //--bottom: clamp(var(--padding-bottom), env(safe-area-inset-bottom), 1.3125rem);
   --bottom: var(--padding-bottom);
   display: flex;
   width: 100%;
@@ -40,17 +31,10 @@ $chat-input-border-radius: 1rem;
   transition: transform var(--transition-standard-out);
   transform: translate3d(0, var(--translateY), 0);
 
-  /* body.is-keyboard-opened & {
-      --bottom: var(--padding-bottom);
-  } */
 
   @include animation-level(0) {
     transition: none !important;
   }
-
-  /* // * for no ESG top
-  flex: 1 1 auto;
-  height: calc(100% - 56px); */
 
   @include respond-to(esg-top) {
     max-width: var(--messages-container-width) !important;
@@ -164,18 +148,10 @@ $chat-input-border-radius: 1rem;
     }
   }
 
-  /* @include respond-to(handhelds) {
-      position: sticky;
-      bottom: 0;
-      z-index: 3;
-      background: inherit;
-      overflow: hidden;
-  } */
 
   .menu-send {
     top: auto;
     bottom: calc(100% + .5rem);
-    //right: var(--chat-input-padding);
   }
 
   .input-message-input {
@@ -340,8 +316,7 @@ $chat-input-border-radius: 1rem;
   }
 
   .btn-icon {
-    transition: /* .2s color, background-color .2s, */
-            .2s opacity;
+    transition: .2s opacity;
 
     @include animation-level(0) {
       transition: none;
@@ -356,19 +331,13 @@ $chat-input-border-radius: 1rem;
   .btn-send {
     color: #fff !important;
     background-color: var(--primary-color) !important;
-    // color: var(--secondary-text-color);
     z-index: 3;
 
     @include hover() {
       background-color: var(--dark-primary-color) !important;
     }
 
-    // .tgico-send {
-    // 	color: var(--primary-color) !important;
-    // }
-
     .tgico-check {
-      // color: var(--primary-color) !important;
       height: 32px !important;
       font-size: 2rem;
 

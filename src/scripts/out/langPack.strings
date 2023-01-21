@@ -21,6 +21,7 @@
 "EditProfile.Username.Invalid" = "Username is invalid";
 "ExceptionModal.Search.Placeholder" = "Add exception...";
 "Chat.Menu.SelectMessages" = "Select Messages";
+"Chat.Menu.TranslateMessage" = "Translation Menu";
 "Chat.Menu.ClearSelection" = "Clear Selection";
 "Chat.Menu.Hint" = "To **edit** or **reply**, close this menu.\nThen tap next to a message.";
 "Chat.Input.UnpinAll" = "Unpin All Messages";
@@ -918,6 +919,7 @@
 "Checkout.WebConfirmation.Title" = "Complete Payment";
 "ChatList.Context.Mute" = "Mute";
 "ChatList.Context.Unmute" = "Unmute";
+"SelectLangTranslation" = "Select Translation Languages",
 "ChatList.Context.Pin" = "Pin";
 "ChatList.Context.Unpin" = "Unpin";
 "ChatList.Context.DeleteChat" = "Delete Chat";

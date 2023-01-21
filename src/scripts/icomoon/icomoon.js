@@ -35,10 +35,10 @@ const PAGE = {
   CSS_VARS_LABEL: '[ng-class*="fontPref.cssVars"]',
   EM_HEIGHT_INPUT: '[model="fontPref.metrics.emSize"] input',
   BASELINE_HEIGHT_INPUT: '[model="fontPref.metrics.baseline"] input',
-  WHITESPACE_WIDTH_INPUT: '[model="fontPref.metrics.whitespace"] input',
+  WHITESPACE_WIDTH_INPUT: '[model="fontPref.metrics.whitespace"] input'
 };
 const DEFAULT_OPTIONS = {
-  outputDir: path.join(__dirname, 'output'),
+  outputDir: path.join(__dirname, 'output')
 };
 
 const logger = (...args) => {
@@ -49,8 +49,8 @@ const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
 const getAbsolutePath = inputPath => {
   let absoluteSelectionPath = inputPath;
-  if (!path.isAbsolute(inputPath)) {
-    if (!process.env.PWD) {
+  if(!path.isAbsolute(inputPath)) {
+    if(!process.env.PWD) {
       process.env.PWD = process.cwd();
     }
     absoluteSelectionPath = path.resolve(process.env.PWD, inputPath);
@@ -62,28 +62,28 @@ const checkDownload = dest => new Promise((resolve, reject) => {
   const interval = 1000;
   let downloadSize = 0;
   let timeCount = 0;
-  const timer = setInterval(async () => {
+  const timer = setInterval(async() => {
     timeCount += interval;
     /* const exist = await fs.exists(dest);
     if (!exist) {
       return;
     } */
     const stats = fs.statSync(dest);
-    if (stats.size > 0 && stats.size === downloadSize) {
+    if(stats.size > 0 && stats.size === downloadSize) {
       clearInterval(timer);
       resolve();
     } else {
       downloadSize = stats.size;
     }
-    if (timeCount > DEFAULT_TIMEOUT) {
+    if(timeCount > DEFAULT_TIMEOUT) {
       reject('Timeout when download file, please check your network.');
     }
   }, interval);
 });
 
-const checkDuplicateName = ({ selectionPath, icons, names }, forceOverride) => {
+const checkDuplicateName = ({selectionPath, icons, names}, forceOverride) => {
   const iconNames = icons.map((icon, index) => {
-    if (names[index]) {
+    if(names[index]) {
       return names[index];
     }
     return path.basename(icon).replace(path.extname(icon), '');
@@ -92,16 +92,16 @@ const checkDuplicateName = ({ selectionPath, icons, names }, forceOverride) => {
   const selection = fs.readJSONSync(selectionPath);
   selection.icons.forEach((icon, index) => {
     const name = icon.tags[0];
-    if (iconNames.includes(name)) {
-      duplicates.push({ name, index });
+    if(iconNames.includes(name)) {
+      duplicates.push({name, index});
     }
   });
-  if (!duplicates.length) {
+  if(!duplicates.length) {
     return;
   }
-  if (forceOverride) {
+  if(forceOverride) {
     selection.icons = selection.icons.filter((icon, index) => !duplicates.some(d => d.index === index));
-    fs.writeJSONSync(selectionPath, selection, { spaces: 2 });
+    fs.writeJSONSync(selectionPath, selection, {spaces: 2});
   } else {
     throw new Error(`Found duplicate icon names: ${duplicates.map(d => d.name).join(',')}`);
   }
@@ -122,14 +122,14 @@ async function pipeline(options = {}) {
     logger('Preparing...');
     if(!icons || !icons.length) {
       if(whenFinished) {
-        whenFinished({ outputDir });
+        whenFinished({outputDir});
       }
       return logger('No new icons found.');
     }
     if(!selectionPath) {
       throw new Error('Please config a valid selection file path.');
     }
-    let absoluteSelectionPath = getAbsolutePath(selectionPath);
+    const absoluteSelectionPath = getAbsolutePath(selectionPath);
     // checkDuplicateName({
     //   selectionPath: absoluteSelectionPath,
     //   icons,
@@ -159,8 +159,8 @@ async function pipeline(options = {}) {
       await Promise.race([
         sleep(1000).then(() => {
           throw 0;
-        }), 
-        page.waitForSelector(PAGE.OVERLAY_CONFIRM, { visible: true })
+        }),
+        page.waitForSelector(PAGE.OVERLAY_CONFIRM, {visible: true})
       ]);
       await page.click(PAGE.OVERLAY_CONFIRM);
     } catch(err) {
@@ -174,7 +174,7 @@ async function pipeline(options = {}) {
       await page.waitForSelector(PAGE.NEW_SET_BUTTON, { visible: true });
       await page.click(PAGE.NEW_SET_BUTTON);
     } */
-    
+
     await page.click(PAGE.MENU_BUTTON);
     const iconInput = await page.waitForSelector(PAGE.ICON_INPUT);
     const iconPaths = icons.map(getAbsolutePath);
@@ -219,7 +219,7 @@ async function pipeline(options = {}) {
     await fillInput(PAGE.EM_HEIGHT_INPUT, selection.preferences.fontPref.metrics.emSize);
     await fillInput(PAGE.BASELINE_HEIGHT_INPUT, selection.preferences.fontPref.metrics.baseline);
     await fillInput(PAGE.WHITESPACE_WIDTH_INPUT, selection.preferences.fontPref.metrics.whitespace);
-    
+
     // await sleep(100000);
     await page.click(PAGE.CLOSE_OVERLAY);
     // (await page.waitForSelector(PAGE.FONT_NAME_INPUT)).;
@@ -264,9 +264,9 @@ async function pipeline(options = {}) {
     await page.waitForSelector(PAGE.DOWNLOAD_BUTTON);
     await page.click(PAGE.DOWNLOAD_BUTTON);
     const meta = selection.preferences.fontPref.metadata;
-    const zipName = meta.majorVersion
-      ? `${meta.fontFamily}-v${meta.majorVersion}.${meta.minorVersion || 0}.zip`
-      : `${meta.fontFamily}.zip`;
+    const zipName = meta.majorVersion ?
+      `${meta.fontFamily}-v${meta.majorVersion}.${meta.minorVersion || 0}.zip` :
+      `${meta.fontFamily}.zip`;
     logger(`Started to download ${zipName}`);
     const zipPath = path.join(outputDir, zipName);
     await checkDownload(zipPath);

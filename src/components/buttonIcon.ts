@@ -11,7 +11,6 @@ const ButtonIcon = (className?: string, options: Partial<{noRipple: true, onlyMo
     icon: className || undefined,
     ...options
   });
-
   return button;
 };
 

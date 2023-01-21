@@ -21,34 +21,7 @@ export const LOG_LEVELS = [LogTypes.None, LogTypes.Error, LogTypes.Warn, LogType
 
 const IS_WEBKIT = IS_SAFARI || IS_FIREFOX;
 
-// let getCallerFunctionNameFromLine: (line: string) => string;
-// if(IS_WEBKIT) {
-//   getCallerFunctionNameFromLine = (line) => {
-//     const splitted = line.split('@');
-//     return splitted[0];
-//   };
-// } else {
-//   getCallerFunctionNameFromLine = (line: string) => {
-//     const splitted = line.trim().split(' ');
-//     if(splitted.length === 3) {
-//       return splitted[1].slice(splitted[1].lastIndexOf('.') + 1);
-//     }
-//   };
-// }
-
 const STYLES_SUPPORTED = !IS_WEBKIT;
-// const LINE_INDEX = IS_WEBKIT ? 2 : 3;
-
-// function getCallerFunctionName() {
-//   const stack = new Error().stack;
-//   const lines = stack.split('\n');
-//   const line = lines[LINE_INDEX] || lines[lines.length - 1];
-//   // const match = line.match(/\.([^\.]+?)\s/);
-//   // line = match ? match[1] : line.trim();
-//   const caller = getCallerFunctionNameFromLine(line) || '<anonymous>';
-//   return '[' + caller + ']';
-// }
-
 export const LOGGER_STYLES = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -108,7 +81,6 @@ const methods: ['debug' | 'info' | 'warn' | 'error' | 'assert' | 'trace'/*  | 'l
   ['group', LogTypes.Log],
   ['groupCollapsed', LogTypes.Log],
   ['groupEnd', LogTypes.Log]
-  // ["log", LogTypes.Log]
 ];
 
 export function logger(prefix: string, type: LogTypes = LogTypes.Log | LogTypes.Warn | LogTypes.Error, ignoreDebugReset = false, style = ''): Logger {
@@ -128,15 +100,13 @@ export function logger(prefix: string, type: LogTypes = LogTypes.Log | LogTypes.
   if(style) style = `%s ${style}%s`;
   else style = '%s';
 
-  // level = LogLevels.log | LogLevels.warn | LogLevels.error | LogLevels.debug
-
   const log: Logger = function(...args: any[]) {
-    return type & LogTypes.Log && console.log(style, dT(), prefix, /* getCallerFunctionName(), */ ...args);
+    return type & LogTypes.Log && console.log(style, dT(), prefix, ...args);
   } as any;
 
   methods.forEach(([method, logType]) => {
     log[method] = function(...args: any[]) {
-      return type & logType && console[method](style, dT(), prefix, /* getCallerFunctionName(), */ ...args);
+      return type & logType && console[method](style, dT(), prefix, ...args);
     };
   });
 
@@ -156,4 +126,4 @@ export function logger(prefix: string, type: LogTypes = LogTypes.Log | LogTypes.
   };
 
   return log;
-};
+}

@@ -30,11 +30,6 @@ export default class PopupDeleteDialog {
       peerType = await managers.appPeersManager.getDialogType(peerId);
     }
 
-    /* const callbackFlush = (checked: PopupPeerButtonCallbackCheckboxes) => {
-      const promise = appMessagesManager.flushHistory(peerId, checkboxes ? !checked[checkboxes[0].text] : undefined);
-      onSelect && onSelect(promise);
-    }; */
-
     const callbackLeave = (checked: PopupPeerButtonCallbackCheckboxes, flush = checkboxes && !!checked.size) => {
       let promise = managers.appChatsManager.leave(peerId.toChatId());
 

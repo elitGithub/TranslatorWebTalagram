@@ -38,7 +38,6 @@ export type ButtonMenuItemOptions = {
   multiline?: boolean,
   loadPromise?: Promise<any>,
   waitForAnimation?: boolean
-  /* , cancelEvent?: true */
 };
 
 export type ButtonMenuItemOptionsVerifiable = ButtonMenuItemOptions & {
@@ -101,7 +100,7 @@ function ButtonMenuItem(options: ButtonMenuItemOptions) {
   const keepOpen = !!checkboxField || !!options.keepOpen;
 
   // * cancel mobile keyboard close
-  onClick && attachClickEvent(el, /* CLICK_EVENT_NAME !== 'click' || keepOpen ? */ /* async */(e) => {
+  onClick && attachClickEvent(el, (e) => {
     cancelEvent(e);
 
     const menu = findUpClassName(e.target, 'btn-menu');
@@ -109,30 +108,19 @@ function ButtonMenuItem(options: ButtonMenuItemOptions) {
       return;
     }
 
-    // let closed = false;
-    // if(!keepOpen && !options.checkForClose) {
-    //   closed = true;
-    //   contextMenuController.close();
-    // }
-
-    // wait for closing animation
-    // if(options.waitForAnimation && rootScope.settings.animationsEnabled && !options.checkForClose) {
-    //   await pause(125);
-    // }
-
     onClick(e);
     if(options.checkForClose?.() === false) {
       return;
     }
 
-    if(!keepOpen/*  && !closed */) {
+    if(!keepOpen) {
       contextMenuController.close();
     }
 
-    if(checkboxField && !noCheckboxClickListener/*  && result !== false */) {
+    if(checkboxField && !noCheckboxClickListener) {
       checkboxField.checked = checkboxField.input.type === 'radio' ? true : !checkboxField.checked;
     }
-  }/*  : onClick */, options.options);
+  }, options.options);
 
   if(checkboxField) {
     el.append(checkboxField.label);

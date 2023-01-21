@@ -16,9 +16,6 @@ import AvatarElement from '../avatar';
 import putPhoto from '../putPhoto';
 import {toastNew} from '../toast';
 import wrapPhoto from '../wrappers/photo';
-
-// const FAKE_CHAT_ID = Number.MAX_SAFE_INTEGER - 0x1000;
-
 export default class PopupJoinChatInvite extends PopupElement {
   constructor(
     private hash: string,
@@ -49,19 +46,6 @@ export default class PopupJoinChatInvite extends PopupElement {
 
   private async construct() {
     this.header.remove();
-    /* const fakeChat: Chat.channel | Chat.chat = {
-      _: chatInvite.pFlags.channel ? 'channel' : 'chat',
-      id: FAKE_CHAT_ID,
-      title: chatInvite.title,
-      photo: chatInvite.photo as any,
-      date: Date.now() / 1000 | 0,
-      version: 0,
-      participants_count: chatInvite.participants_count,
-      pFlags: chatInvite.pFlags as any
-    };
-
-    appChatsManager.saveApiChat(fakeChat); */
-
     const {chatInvite, managers, hash} = this;
 
     const avatarElem = new AvatarElement();
